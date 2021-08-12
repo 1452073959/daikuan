@@ -11,18 +11,24 @@ define(["jquery", "easy-admin"], function ($, ea) {
         export_url: 'system.admin/export',
         password_url: 'system.admin/password',
     };
+    var soulTable = layui.soulTable;
 
+    console.log(soulTable);
     var Controller = {
 
         index: function () {
 
             ea.table.render({
-                init: init,
+                init: init, overflow: 'tips',
+                skin: 'line  ' //行边框风格
+                , even: true, //开启隔行背景
+                // size: 'sm', //小尺寸的表格
                 cols: [[
                     {type: "checkbox"},
                     {field: 'id', width: 80, title: 'ID'},
                     {field: 'sort', width: 80, title: '排序', edit: 'text'},
                     {field: 'username', minWidth: 80, title: '登录账户'},
+                    {field: 'name', minWidth: 80, title: '姓名'},
                     {field: 'head_img', minWidth: 80, title: '头像', search: false, templet: ea.table.image},
                     {field: 'phone', minWidth: 80, title: '手机'},
                     {field: 'login_num', minWidth: 80, title: '登录次数'},
@@ -46,6 +52,13 @@ define(["jquery", "easy-admin"], function ($, ea) {
                         ]
                     }
                 ]],
+                done: function () {
+                    // 在 done 中开启
+                    soulTable.render(this)
+                }
+                , autoColumnWidth: {
+                    init: false
+                },
             });
 
             ea.listen();

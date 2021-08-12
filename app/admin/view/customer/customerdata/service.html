@@ -1,0 +1,41 @@
+<div class="layuimini-container">
+    <form id="app-form" class="layui-form layuimini-form" action="{:url('postservice')}" method="post">
+        <div class="layui-form-item">
+            <label class="layui-form-label">负责人</label>
+            <div class="layui-input-block">
+                <div id="audit"></div>
+            </div>
+        </div>
+        <input name="data_id" type="text" value="{$data_id}">
+
+        <div class="hr-line"></div>
+        <div class="layui-form-item text-center">
+            <button type="sutixianit" class="layui-btn layui-btn-normal layui-btn-sm" lay-filter id="sub">确认</button>
+            <button type="reset" class="layui-btn layui-btn-primary layui-btn-sm">重置</button>
+        </div>
+    </form>
+</div>
+<script src="https://www.jq22.com/jquery/jquery-3.3.1.js"></script>
+
+
+<script>
+    //人员
+    var audit = '<?php echo  json_encode($audit);?>';
+    var audit = JSON.parse(audit);
+    console.log(audit);
+    var audit = xmSelect.render({
+        el: '#audit',
+        language: 'zn',
+        tips: '请选择客服,',
+        name: 'service_id',
+        filterable: true,
+        radio: true,
+        clickClose: true,
+        toolbar: {
+            show: true,
+            list: ['ALL', 'CLEAR', 'REVERSE']
+        },
+        data: audit
+    })
+
+</script>

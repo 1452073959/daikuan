@@ -1,4 +1,4 @@
-define(["jquery", "tableSelect", "ckeditor"], function ($, tableSelect, undefined) {
+define(["jquery", "tableSelect", "ckeditor", "soulTable",], function ($, tableSelect, undefined,soulTable,) {
 
     var form = layui.form,
         layer = layui.layer,
@@ -7,8 +7,9 @@ define(["jquery", "tableSelect", "ckeditor"], function ($, tableSelect, undefine
         upload = layui.upload,
         element = layui.element,
         laytpl = layui.laytpl,
-        tableSelect = layui.tableSelect,
-        util = layui.uitl;
+        tableSelect = layui.tableSelect;
+
+    var soulTable = layui.soulTable;
 
     layer.config({
         skin: 'layui-layer-easy'
@@ -18,7 +19,7 @@ define(["jquery", "tableSelect", "ckeditor"], function ($, tableSelect, undefine
         table_elem: '#currentTable',
         table_render_id: 'currentTableRenderId',
         upload_url: 'ajax/upload',
-        upload_exts: 'doc|gif|ico|icon|jpg|mp3|mp4|p12|pem|png|rar',
+        upload_exts: 'doc|gif|ico|icon|jpg|mp3|mp4|p12|pem|png|rar|pdf',
     };
 
     var admin = {
@@ -27,16 +28,6 @@ define(["jquery", "tableSelect", "ckeditor"], function ($, tableSelect, undefine
         },
         url: function (url) {
             return '/' + CONFIG.ADMIN + '/' + url;
-        },
-        //js版empty，判断变量是否为空
-        empty: function (r) {
-            var n, t, e, f = [void 0, null, !1, 0, "", "0"];
-            for (t = 0, e = f.length; t < e; t++) if (r === f[t]) return !0;
-            if ("object" == typeof r) {
-                for (n in r) if (r.hasOwnProperty(n)) return !1;
-                return !0
-            }
-            return !1
         },
         checkAuth: function (node, elem) {
             if (CONFIG.IS_SUPER_ADMIN) {
@@ -191,8 +182,8 @@ define(["jquery", "tableSelect", "ckeditor"], function ($, tableSelect, undefine
                 options.page = admin.parame(options.page, true);
                 options.search = admin.parame(options.search, true);
                 options.skin = options.skin || 'line';
-                options.limit = options.limit || 15;
-                options.limits = options.limits || [10, 15, 20, 25, 50, 100];
+                options.limit = options.limit || 20;
+                options.limits = options.limits || [20, 40, 60, 80, 100, 99999];
                 options.cols = options.cols || [];
                 options.defaultToolbar = (options.defaultToolbar === undefined && !options.search) ? ['filter', 'print', 'exports'] : ['filter', 'print', 'exports', {
                     title: '搜索',
@@ -340,6 +331,15 @@ define(["jquery", "tableSelect", "ckeditor"], function ($, tableSelect, undefine
                                     '<label class="layui-form-label">' + d.title + '</label>\n' +
                                     '<div class="layui-input-inline">\n' +
                                     '<input id="c-' + d.fieldAlias + '" name="' + d.fieldAlias + '"  data-search-op="' + d.searchOp + '"  value="' + d.searchValue + '" placeholder="' + d.searchTip + '" class="layui-input">\n' +
+                                    '</div>\n' +
+                                    '</div>';
+                                break;
+                            case 'searchtime':
+                                d.searchOp = 'searchtime';
+                                formHtml += '\t<div class="layui-form-item layui-inline">\n' +
+                                    '<label class="layui-form-label">' + d.title + '</label>\n' +
+                                    '<div class="layui-input-inline">\n' +
+                                    '<input id="c-' + d.fieldAlias + '" name="' + d.fieldAlias + '" data-search-op="' + d.searchOp + '" value="' + d.searchValue + '" placeholder="' + d.searchTip + '" class="layui-input">\n' +
                                     '</div>\n' +
                                     '</div>';
                                 break;
@@ -631,6 +631,16 @@ define(["jquery", "tableSelect", "ckeditor"], function ($, tableSelect, undefine
                     return valuesHtml.join(option.imageJoin);
                 }
             },
+            video: function (data, option) {
+                var field = option.field;
+                try {
+                    var value = eval("data." + field);
+                } catch (e) {
+                    var value = undefined;
+                }
+                return '<a class="layuimini-table-url" href="' + value + '" target="_blank" class="label bg-green">' + value + '</a>';
+            },
+
             url: function (data, option) {
                 var field = option.field;
                 try {
@@ -695,17 +705,6 @@ define(["jquery", "tableSelect", "ckeditor"], function ($, tableSelect, undefine
                     var value = eval("data." + field);
                 } catch (e) {
                     var value = undefined;
-                }
-                return '<span>' + value + '</span>';
-            },
-            //时间戳转日期
-            date: function (data, option) {
-                var field = option.field, value = '';
-                try {
-                    value = eval("data." + field);
-                } catch (e) {}
-                if (!admin.empty(value)){
-                    value = util.toDateString(value * 1000, option.format || 'yyyy-MM-dd HH:mm:ss');
                 }
                 return '<span>' + value + '</span>';
             },
@@ -840,7 +839,7 @@ define(["jquery", "tableSelect", "ckeditor"], function ($, tableSelect, undefine
             }
             return mobile_flag;
         },
-        open: function (title, url, width, height, isResize, shadeClose = false) {
+        open: function (title, url, width, height, isResize) {
             isResize = isResize === undefined ? true : isResize;
             var index = layer.open({
                 title: title,
@@ -849,9 +848,10 @@ define(["jquery", "tableSelect", "ckeditor"], function ($, tableSelect, undefine
                 content: url,
                 maxmin: true,
                 moveOut: true,
-                shadeClose: shadeClose,
+                zIndex: layer.zIndex, //重点1
                 success: function (layero, index) {
                     var body = layer.getChildFrame('body', index);
+                    layer.setTop(layero); //重点2
                     if (body.length > 0) {
                         $.each(body, function (i, v) {
 
@@ -863,9 +863,6 @@ define(["jquery", "tableSelect", "ckeditor"], function ($, tableSelect, undefine
                                 '</style>');
                         });
                     }
-                },
-                end: function () {
-                    index = null
                 }
             });
             if (admin.checkMobile() || width === undefined || height === undefined) {
@@ -873,7 +870,7 @@ define(["jquery", "tableSelect", "ckeditor"], function ($, tableSelect, undefine
             }
             if (isResize) {
                 $(window).on("resize", function () {
-                    index && layer.full(index);
+                    layer.full(index);
                 })
             }
         },
@@ -981,7 +978,7 @@ define(["jquery", "tableSelect", "ckeditor"], function ($, tableSelect, undefine
                 });
                 return false;
             });
-            
+
             // 放大一组图片
             $('body').on('click', '[data-images]', function () {
                 var title = $(this).attr('data-images'),
@@ -1458,12 +1455,16 @@ define(["jquery", "tableSelect", "ckeditor"], function ($, tableSelect, undefine
                         var format = $(this).attr('data-date'),
                             type = $(this).attr('data-date-type'),
                             range = $(this).attr('data-date-range');
+                        console.log(format);
                         if(type === undefined || type === '' || type ===null){
                             type = 'datetime';
                         }
                         var options = {
                             elem: this,
                             type: type,
+                            theme: '#1B3382',
+                            position: 'fixed',
+                            trigger:'click'//增加这个，解决闪屏,
                         };
                         if (format !== undefined && format !== '' && format !== null) {
                             options['format'] = format;

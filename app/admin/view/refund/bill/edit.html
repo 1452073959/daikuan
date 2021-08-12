@@ -1,0 +1,82 @@
+<div class="layuimini-container">
+    <form id="app-form" class="layui-form layuimini-form">
+        
+        <div class="layui-form-item">
+            <label class="layui-form-label">订单id</label>
+            <div class="layui-input-block">
+                <input type="text" name="order_id" class="layui-input" lay-verify="required" placeholder="请输入订单id" value="{$row.order_id|default=''}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">还款账户</label>
+            <div class="layui-input-block">
+                <input type="text" name="refund_bank_id" class="layui-input" lay-verify="required" placeholder="请输入还款账户" value="{$row.refund_bank_id|default=''}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">收款户</label>
+            <div class="layui-input-block">
+                <input type="text" name="refund_gathering_id" class="layui-input" lay-verify="required" placeholder="请输入收款户" value="{$row.refund_gathering_id|default=''}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">还款客户id</label>
+            <div class="layui-input-block">
+                <input type="text" name="refund_customer_id" class="layui-input" lay-verify="required" placeholder="请输入还款客户id" value="{$row.refund_customer_id|default=''}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">还款编号</label>
+            <div class="layui-input-block">
+                <input type="text" name="refund_code" class="layui-input" lay-verify="required" placeholder="请输入还款编号" value="{$row.refund_code|default=''}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">还款金额</label>
+            <div class="layui-input-block">
+                <input type="text" name="refund_amount" class="layui-input" lay-verify="required" placeholder="请输入还款金额" value="{$row.refund_amount|default=''}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">还款时间</label>
+            <div class="layui-input-block">
+                <input type="text" name="refund_time" class="layui-input"  placeholder="请输入还款时间" value="{$row.refund_time|default=''}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">还款状态</label>
+            <div class="layui-input-block">
+                <select name="refund_status" lay-verify="required">
+                    <option value=''></option>
+                    {foreach $getRefundStatusList as $k=>$v}
+                    <option value='{$k}' {in name="k" value="$row.refund_status"}selected=""{/in}>{$v}</option>
+                    {/foreach}
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">还款凭证</label>
+            <div class="layui-input-block">
+                <input type="text" name="refund_certificate" class="layui-input" lay-verify="required" placeholder="请输入还款凭证" value="{$row.refund_certificate|default=''}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">还款创建时间</label>
+            <div class="layui-input-block">
+                <input type="text" name="refund_create_time" class="layui-input"  placeholder="请输入还款创建时间" value="{$row.refund_create_time|default=''}">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">还款更新时间</label>
+            <div class="layui-input-block">
+                <input type="text" name="refund_update_time" class="layui-input"  placeholder="请输入还款更新时间" value="{$row.refund_update_time|default=''}">
+            </div>
+        </div>
+        <div class="hr-line"></div>
+        <div class="layui-form-item text-center">
+            <button type="submit" class="layui-btn layui-btn-normal layui-btn-sm" lay-submit>确认</button>
+            <button type="reset" class="layui-btn layui-btn-primary layui-btn-sm">重置</button>
+        </div>
+
+    </form>
+</div>

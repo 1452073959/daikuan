@@ -22,6 +22,7 @@ require.config({
         "autocomplete": ["plugs/lay-module/autocomplete/autocomplete"],
         "vue": ["plugs/vue-2.6.10/vue.min"],
         "ckeditor": ["plugs/ckeditor4/ckeditor"],
+        "soulTable": ["plugs/layui-soul-table/ext/soulTable.slim"],
     }
 });
 
